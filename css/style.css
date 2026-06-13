@@ -571,3 +571,20 @@ body.nav-open .nav-toggle::after { transform: translateY(-9px) rotate(-45deg); }
   .feature-grid { grid-template-columns: 1fr; }
   .share-row { margin-left: 0; }
 }
+
+/* ── RTL (Arabic) ─────────────────────────────────────────── */
+[dir="rtl"] { text-align: right; }
+[dir="rtl"] .section-head--row { flex-direction: row-reverse; }
+[dir="rtl"] .tour-card { direction: rtl; }
+[dir="rtl"] .price-bubble { left: auto; right: 14px; }
+[dir="rtl"] .modal-body { direction: rtl; }
+[dir="rtl"] .modal-thumbs { direction: rtl; }
+[dir="rtl"] .booking-layout { direction: rtl; }
+[dir="rtl"] .site-header .wrap { flex-direction: row; }
+[dir="rtl"] .main-nav { flex-direction: row-reverse; }
+[dir="rtl"] .wa-float { left: 22px; right: auto; }
+[dir="rtl"] .to-top { left: 22px; right: auto; }
+
+/* ── Lang switch 4 buttons ─────────────────────────────────── */
+.lang-switch { display:flex; gap:4px; }
+.lang-switch button { min-width:32px; padding:4px 6px; font-size:.72rem; }

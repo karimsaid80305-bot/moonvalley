@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Moon Valley Tours</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{--night:#071b33;--navy:#0b2c4d;--brand:#1fa9e4;--gold:#f5a93b;--red:#e05252;--green:#3aaf6f;--paper:#fff;--sky:#f3fafe;--ink:#0e2a44;--mist:#5c7894;--line:#dcebf5}
+body{margin:0;font-family:"Manrope","Segoe UI",sans-serif;background:var(--night);color:var(--ink);min-height:100vh}
+/* ── Login ── */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-card{background:var(--navy);border-radius:20px;padding:48px 40px;max-width:420px;width:100%;text-align:center}
+.login-card img{width:64px;height:64px;border-radius:12px;margin-bottom:16px}
+.login-card h1{color:#fff;font-size:1.6rem;margin:0 0 6px}
+.login-card p{color:#7fa3be;margin:0 0 30px;font-size:.9rem}
+.login-card input{width:100%;padding:13px 16px;border-radius:12px;border:2px solid #1c3a58;background:#0b2447;color:#fff;font-size:1rem;font-family:inherit;margin-bottom:12px;outline:none}
+.login-card input:focus{border-color:var(--brand)}
+.login-card button{width:100%;padding:13px;border-radius:12px;border:0;background:var(--brand);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;transition:opacity .2s}
+.login-card button:hover{opacity:.88}
+#login-err{color:var(--red);font-size:.88rem;margin-top:8px;min-height:20px}
+/* ── Shell ── */
+#app-shell{display:none;flex-direction:column;min-height:100vh}
+.admin-header{background:var(--navy);padding:0 24px;display:flex;align-items:center;gap:16px;height:64px;border-bottom:1px solid #1c3a58}
+.admin-header img{width:40px;height:40px;border-radius:8px}
+.admin-header h1{color:#fff;font-size:1.1rem;margin:0;flex:1}
+.admin-header a{color:#7fa3be;font-size:.85rem;text-decoration:none}
+.admin-header a:hover{color:#fff}
+.admin-layout{display:flex;flex:1}
+/* ── Sidebar ── */
+.admin-sidebar{width:220px;background:var(--navy);border-right:1px solid #1c3a58;padding:20px 0;flex-shrink:0}
+.sidebar-link{display:block;padding:12px 22px;color:#7fa3be;font-weight:600;font-size:.9rem;text-decoration:none;border-left:3px solid transparent;transition:all .18s;cursor:pointer}
+.sidebar-link:hover,.sidebar-link.active{color:#fff;background:#0e2847;border-left-color:var(--brand)}
+.sidebar-sep{height:1px;background:#1c3a58;margin:12px 16px}
+/* ── Content ── */
+.admin-content{flex:1;padding:30px;background:var(--sky);overflow-y:auto}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.panel-card{background:#fff;border-radius:16px;padding:28px;margin-bottom:24px;box-shadow:0 2px 10px rgba(11,44,77,.07)}
+.panel-card h2{font-size:1.15rem;color:var(--navy);margin:0 0 20px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+/* ── Form ── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-row.full{grid-template-columns:1fr}
+label{display:block;font-size:.82rem;font-weight:700;color:var(--mist);margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em}
+input[type=text],input[type=number],input[type=url],input[type=email],textarea,select{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:.92rem;font-family:inherit;outline:none;transition:border-color .18s}
+input:focus,textarea:focus,select:focus{border-color:var(--brand)}
+textarea{resize:vertical;min-height:90px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:99px;border:0;font-weight:700;font-size:.88rem;cursor:pointer;transition:opacity .18s}
+.btn:hover{opacity:.88}
+.btn--brand{background:var(--brand);color:#fff}
+.btn--gold{background:var(--gold);color:#fff}
+.btn--red{background:var(--red);color:#fff}
+.btn--green{background:var(--green);color:#fff}
+.btn--ghost{background:transparent;border:2px solid var(--line);color:var(--mist)}
+.btn--sm{padding:7px 16px;font-size:.82rem}
+.toast-adm{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;font-size:.88rem;opacity:0;pointer-events:none;transition:opacity .3s;z-index:9999}
+.toast-adm.show{opacity:1}
+/* ── Tour list ── */
+.tour-adm-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.tour-adm-row:last-child{border:0}
+.tour-adm-thumb{width:56px;height:42px;border-radius:8px;object-fit:cover;flex-shrink:0}
+.tour-adm-info{flex:1;min-width:0}
+.tour-adm-info strong{display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tour-adm-info span{font-size:.8rem;color:var(--mist)}
+.badge-custom{background:#fef3dc;color:#b8760a;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:6px}
+/* ── Config items ── */
+.config-table{width:100%;border-collapse:collapse}
+.config-table td{padding:9px 12px;border-bottom:1px solid var(--line);font-size:.9rem}
+.config-table tr:last-child td{border:0}
+.config-table td:first-child{color:var(--mist);font-weight:600;width:160px;font-size:.82rem}
+.config-table input{border:1.5px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.88rem;width:100%}
+/* ── Stats ── */
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-box{background:#fff;border-radius:14px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(11,44,77,.06)}
+.stat-box .num{font-size:2rem;font-weight:800;color:var(--brand);line-height:1}
+.stat-box .lbl{font-size:.8rem;color:var(--mist);margin-top:4px}
+@media(max-width:768px){
+  .admin-sidebar{display:none}
+  .form-row{grid-template-columns:1fr}
+  .stats-strip{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-card">
+    <img src="assets/logo/logo.jpg" alt="Moon Valley Tours">
+    <h1>Admin Panel</h1>
+    <p>Moon Valley Tours — Internal Access</p>
+    <input type="password" id="pwd-input" placeholder="Password" autocomplete="current-password">
+    <button onclick="doLogin()">Sign In</button>
+    <div id="login-err"></div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app-shell">
+  <header class="admin-header">
+    <img src="assets/logo/logo.jpg" alt="Moon Valley Tours">
+    <h1>Moon Valley Tours — Admin Panel</h1>
+    <a href="index.html" target="_blank">↗ View site</a>
+    &nbsp;&nbsp;
+    <a href="#" onclick="doLogout()">Sign out</a>
+  </header>
+  <div class="admin-layout">
+    <nav class="admin-sidebar">
+      <div class="sidebar-link active" data-tab="dashboard">📊 Dashboard</div>
+      <div class="sidebar-sep"></div>
+      <div class="sidebar-link" data-tab="tours">🗺️ Tours Manager</div>
+      <div class="sidebar-link" data-tab="add-tour">➕ Add New Tour</div>
+      <div class="sidebar-sep"></div>
+      <div class="sidebar-link" data-tab="config">⚙️ Company Settings</div>
+    </nav>
+    <main class="admin-content">
+
+      <!-- DASHBOARD -->
+      <div class="tab-pane active" id="tab-dashboard">
+        <h2 style="font-size:1.4rem;color:var(--navy);margin:0 0 20px">Dashboard</h2>
+        <div class="stats-strip">
+          <div class="stat-box"><div class="num" id="stat-tours">30</div><div class="lbl">Total Tours</div></div>
+          <div class="stat-box"><div class="num" id="stat-custom">0</div><div class="lbl">Custom Tours</div></div>
+          <div class="stat-box"><div class="num">4</div><div class="lbl">Languages</div></div>
+          <div class="stat-box"><div class="num">10</div><div class="lbl">Destinations</div></div>
+        </div>
+        <div class="panel-card">
+          <h2>Quick Actions</h2>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            <button class="btn btn--brand" onclick="showTab('add-tour')">➕ Add New Tour</button>
+            <button class="btn btn--gold" onclick="showTab('config')">⚙️ Edit Company Info</button>
+            <button class="btn btn--ghost" onclick="exportData()">⬇ Export Data (JSON)</button>
+            <button class="btn btn--ghost" onclick="clearCustom()">🗑 Clear Custom Tours</button>
+          </div>
+        </div>
+        <div class="panel-card">
+          <h2>Live Site URLs</h2>
+          <table class="config-table">
+            <tr><td>GitHub Pages</td><td><a href="https://karimsaid80305-bot.github.io/moonvalley/" target="_blank">karimsaid80305-bot.github.io/moonvalley/</a></td></tr>
+            <tr><td>Netlify</td><td><a href="https://neon-douhua-465aa2.netlify.app" target="_blank">neon-douhua-465aa2.netlify.app</a></td></tr>
+            <tr><td>WhatsApp</td><td><a href="https://wa.me/905396819441" target="_blank">+90 539 681 9441</a></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- TOURS MANAGER -->
+      <div class="tab-pane" id="tab-tours">
+        <h2 style="font-size:1.4rem;color:var(--navy);margin:0 0 20px">Tours Manager</h2>
+        <div class="panel-card">
+          <h2>All Tours <span id="tours-count" style="font-size:.85rem;font-weight:400;color:var(--mist)"></span></h2>
+          <div id="tours-list"></div>
+        </div>
+      </div>
+
+      <!-- ADD TOUR -->
+      <div class="tab-pane" id="tab-add-tour">
+        <h2 style="font-size:1.4rem;color:var(--navy);margin:0 0 20px">Add New Tour</h2>
+        <div class="panel-card">
+          <h2>Tour Details (English)</h2>
+          <div class="form-row">
+            <div><label>Slug (URL key)*</label><input type="text" id="f-slug" placeholder="my-new-tour"></div>
+            <div><label>City Slug*</label><select id="f-city"><option value="istanbul">Istanbul</option><option value="cappadocia">Cappadocia</option><option value="bodrum">Bodrum</option><option value="fethiye">Fethiye</option><option value="pamukkale">Pamukkale</option><option value="dubai">Dubai</option><option value="abu-dhabi">Abu Dhabi</option><option value="london">London</option><option value="cairo">Cairo</option><option value="buenos-aires">Buenos Aires</option></select></div>
+          </div>
+          <div class="form-row">
+            <div><label>Price (EUR)*</label><input type="number" id="f-price" placeholder="50" min="1"></div>
+            <div><label>Duration (EN)*</label><input type="text" id="f-dur" placeholder="3 hours"></div>
+          </div>
+          <div class="form-row full"><div><label>Title (English)*</label><input type="text" id="f-title-en" placeholder="My Amazing Tour"></div></div>
+          <div class="form-row full"><div><label>Description (English)*</label><textarea id="f-desc-en" placeholder="Describe the tour experience..."></textarea></div></div>
+          <div class="form-row full"><div><label>What's Included (English) — one item per line</label><textarea id="f-inc-en" placeholder="Expert local guide&#10;Entry tickets&#10;Lunch"></textarea></div></div>
+          <div class="form-row full"><div><label>Itinerary (English) — one stop per line</label><textarea id="f-itin-en" placeholder="Meeting point&#10;First stop&#10;Second stop&#10;Return"></textarea></div></div>
+        </div>
+        <div class="panel-card">
+          <h2>Tour Details (Turkish / Türkçe)</h2>
+          <div class="form-row full"><div><label>Başlık (TR)</label><input type="text" id="f-title-tr" placeholder="Tur başlığı"></div></div>
+          <div class="form-row full"><div><label>Açıklama (TR)</label><textarea id="f-desc-tr" placeholder="Tur açıklaması..."></textarea></div></div>
+          <div class="form-row full"><div><label>Süre (TR)</label><input type="text" id="f-dur-tr" placeholder="3 saat"></div></div>
+          <div class="form-row full"><div><label>Dahil olanlar (TR) — her satıra bir madde</label><textarea id="f-inc-tr" placeholder="Yerel uzman rehber&#10;Giriş biletleri&#10;Öğle yemeği"></textarea></div></div>
+          <div class="form-row full"><div><label>Program (TR) — her satıra bir durak</label><textarea id="f-itin-tr" placeholder="Buluşma noktası&#10;İlk durak&#10;İkinci durak&#10;Dönüş"></textarea></div></div>
+        </div>
+        <div class="panel-card">
+          <h2>Tour Details (Arabic / العربية)</h2>
+          <div class="form-row full"><div><label>العنوان (AR)</label><input type="text" id="f-title-ar" placeholder="عنوان الجولة" dir="rtl"></div></div>
+          <div class="form-row full"><div><label>الوصف (AR)</label><textarea id="f-desc-ar" placeholder="وصف الجولة..." dir="rtl"></textarea></div></div>
+          <div class="form-row full"><div><label>المدة (AR)</label><input type="text" id="f-dur-ar" placeholder="3 ساعات" dir="rtl"></div></div>
+          <div class="form-row full"><div><label>ماذا يشمل (AR) — سطر لكل بند</label><textarea id="f-inc-ar" placeholder="مرشد محلي خبير&#10;تذاكر الدخول&#10;الغداء" dir="rtl"></textarea></div></div>
+          <div class="form-row full"><div><label>البرنامج (AR) — سطر لكل محطة</label><textarea id="f-itin-ar" placeholder="نقطة الالتقاء&#10;المحطة الأولى&#10;المحطة الثانية&#10;العودة" dir="rtl"></textarea></div></div>
+        </div>
+        <div class="panel-card">
+          <h2>Tour Details (Spanish / Español)</h2>
+          <div class="form-row full"><div><label>Título (ES)</label><input type="text" id="f-title-es" placeholder="Mi Tour Increíble"></div></div>
+          <div class="form-row full"><div><label>Descripción (ES)</label><textarea id="f-desc-es" placeholder="Describe la experiencia del tour..."></textarea></div></div>
+          <div class="form-row full"><div><label>Duración (ES)</label><input type="text" id="f-dur-es" placeholder="3 horas"></div></div>
+          <div class="form-row full"><div><label>Qué incluye (ES) — un ítem por línea</label><textarea id="f-inc-es" placeholder="Guía local experto&#10;Entradas&#10;Almuerzo"></textarea></div></div>
+          <div class="form-row full"><div><label>Itinerario (ES) — una parada por línea</label><textarea id="f-itin-es" placeholder="Punto de encuentro&#10;Primera parada&#10;Segunda parada&#10;Regreso"></textarea></div></div>
+        </div>
+        <div class="panel-card">
+          <h2>Images & Options</h2>
+          <div class="form-row full"><div><label>Image URLs — one URL per line (Pexels, Unsplash, etc.)</label><textarea id="f-images" placeholder="https://images.pexels.com/photos/...&#10;https://images.pexels.com/photos/..."></textarea></div></div>
+          <div class="form-row">
+            <div><label>Free Cancellation</label><select id="f-cancel"><option value="true">Yes</option><option value="false">No</option></select></div>
+            <div><label>Hotel Pickup</label><select id="f-pickup"><option value="false">No</option><option value="true">Yes</option></select></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:8px">
+          <button class="btn btn--brand" onclick="saveTour()">💾 Save Tour</button>
+          <button class="btn btn--ghost" onclick="clearForm()">✕ Clear</button>
+        </div>
+        <div id="add-msg" style="margin-top:12px;font-size:.9rem"></div>
+      </div>
+
+      <!-- COMPANY SETTINGS -->
+      <div class="tab-pane" id="tab-config">
+        <h2 style="font-size:1.4rem;color:var(--navy);margin:0 0 20px">Company Settings</h2>
+        <div class="panel-card">
+          <h2>Contact Information</h2>
+          <p style="font-size:.85rem;color:var(--mist);margin-top:-12px">Changes are saved to localStorage and applied live on the site.</p>
+          <table class="config-table" id="config-fields">
+            <tr><td>WhatsApp</td><td><input id="cfg-whatsapp" type="text" value="905396819441"></td></tr>
+            <tr><td>Phone</td><td><input id="cfg-phone" type="text" value="+90 212 220 0323"></td></tr>
+            <tr><td>Phone 2 (GSM)</td><td><input id="cfg-phone2" type="text" value="+90 539 681 9441"></td></tr>
+            <tr><td>Email 1</td><td><input id="cfg-email" type="text" value="info@moonvalleytours.com"></td></tr>
+            <tr><td>Email 2</td><td><input id="cfg-email2" type="text" value="susana@moonvalleytours.com"></td></tr>
+            <tr><td>Address</td><td><input id="cfg-address" type="text" value="Perpa Ticaret Merkezi A Blok Kat:05 No:432 - Sisli/Istanbul"></td></tr>
+            <tr><td>TURSAB</td><td><input id="cfg-tursab" type="text" value="A/8271"></td></tr>
+          </table>
+          <div style="margin-top:16px;display:flex;gap:10px">
+            <button class="btn btn--brand" onclick="saveConfig()">💾 Save Settings</button>
+            <button class="btn btn--ghost btn--sm" onclick="resetConfig()">↩ Reset to defaults</button>
+          </div>
+        </div>
+        <div class="panel-card">
+          <h2>Admin Password</h2>
+          <div class="form-row">
+            <div><label>New Password</label><input type="password" id="new-pwd" placeholder="Enter new password"></div>
+            <div><label>Confirm Password</label><input type="password" id="confirm-pwd" placeholder="Repeat password"></div>
+          </div>
+          <button class="btn btn--gold btn--sm" onclick="changePwd()">Change Password</button>
+          <div id="pwd-msg" style="margin-top:8px;font-size:.85rem"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="toast-adm" id="adm-toast"></div>
+
+<script src="js/app.js"></script>
+<script>
+"use strict";
+const PWD_KEY = "mv-admin-pwd";
+const DEFAULT_PWD = "MV2026admin";
+
+function hashPwd(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) { h = Math.imul(31, h) + s.charCodeAt(i) | 0; }
+  return "mv" + Math.abs(h).toString(36);
+}
+
+function doLogin() {
+  const pwd = document.getElementById("pwd-input").value;
+  const stored = localStorage.getItem(PWD_KEY) || hashPwd(DEFAULT_PWD);
+  if (hashPwd(pwd) === stored) {
+    sessionStorage.setItem("mv-admin-ok", "1");
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("app-shell").style.display = "flex";
+    initAdmin();
+  } else {
+    document.getElementById("login-err").textContent = "Incorrect password.";
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem("mv-admin-ok");
+  location.reload();
+}
+
+document.getElementById("pwd-input").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
+
+// Auto-login if session active
+if (sessionStorage.getItem("mv-admin-ok") === "1") {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("app-shell").style.display = "flex";
+  initAdmin();
+}
+
+function toastAdm(msg) {
+  const el = document.getElementById("adm-toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("show"), 2600);
+}
+
+function showTab(name) {
+  document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".sidebar-link").forEach(l => l.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  document.querySelector(`.sidebar-link[data-tab="${name}"]`).classList.add("active");
+}
+
+document.querySelectorAll(".sidebar-link[data-tab]").forEach(el => {
+  el.addEventListener("click", () => showTab(el.dataset.tab));
+});
+
+function initAdmin() {
+  renderToursList();
+  updateStats();
+  loadConfigFields();
+}
+
+function getCustomTours() {
+  return JSON.parse(localStorage.getItem("mv-admin-tours") || "[]");
+}
+function setCustomTours(arr) {
+  localStorage.setItem("mv-admin-tours", JSON.stringify(arr));
+}
+
+function renderToursList() {
+  const allTours = [...TOURS];
+  const custom = getCustomTours();
+  const container = document.getElementById("tours-list");
+  document.getElementById("tours-count").textContent = `(${allTours.length} total, ${custom.length} custom)`;
+  container.innerHTML = allTours.map(t => {
+    const isCustom = custom.some(c => c.slug === t.slug);
+    return `<div class="tour-adm-row">
+      <img class="tour-adm-thumb" src="${t.images && t.images[0] ? t.images[0] : "assets/logo/logo.jpg"}" alt="" loading="lazy">
+      <div class="tour-adm-info">
+        <strong>${t.i18n && t.i18n.en ? t.i18n.en.title : t.slug}${isCustom ? '<span class="badge-custom">Custom</span>' : ''}</strong>
+        <span>${(t.cityName && (t.cityName.en || t.cityName)) || t.citySlug || ""} &nbsp;·&nbsp; €${t.price}</span>
+      </div>
+      ${isCustom ? `<button class="btn btn--red btn--sm" onclick="deleteTour('${t.slug}')">Delete</button>` : ""}
+    </div>`;
+  }).join("");
+}
+
+function deleteTour(slug) {
+  if (!confirm("Delete custom tour: " + slug + "?")) return;
+  const arr = getCustomTours().filter(t => t.slug !== slug);
+  setCustomTours(arr);
+  // remove from live TOURS array
+  const idx = TOURS.findIndex(t => t.slug === slug);
+  if (idx > -1) TOURS.splice(idx, 1);
+  renderToursList();
+  updateStats();
+  toastAdm("Tour deleted.");
+}
+
+function updateStats() {
+  const custom = getCustomTours();
+  document.getElementById("stat-tours").textContent = TOURS.length;
+  document.getElementById("stat-custom").textContent = custom.length;
+}
+
+function clearCustom() {
+  if (!confirm("Delete ALL custom tours?")) return;
+  setCustomTours([]);
+  location.reload();
+}
+
+function lines(s) { return s.split("\n").map(l => l.trim()).filter(Boolean); }
+
+function saveTour() {
+  const slug = document.getElementById("f-slug").value.trim().replace(/\s+/g, "-").toLowerCase();
+  const city = document.getElementById("f-city").value;
+  const price = parseFloat(document.getElementById("f-price").value);
+  const titleEn = document.getElementById("f-title-en").value.trim();
+  const descEn = document.getElementById("f-desc-en").value.trim();
+  const durEn = document.getElementById("f-dur").value.trim();
+  const incEn = lines(document.getElementById("f-inc-en").value);
+  const itinEn = lines(document.getElementById("f-itin-en").value);
+
+  if (!slug || !price || !titleEn || !descEn) {
+    document.getElementById("add-msg").innerHTML = '<span style="color:#e05252">Please fill in required fields (slug, price, EN title and description).</span>';
+    return;
+  }
+  if (TOURS.some(t => t.slug === slug)) {
+    document.getElementById("add-msg").innerHTML = '<span style="color:#e05252">Slug already exists. Choose a different slug.</span>';
+    return;
+  }
+
+  const CITY_NAMES = {
+    "istanbul":{"en":"Istanbul","tr":"İstanbul","ar":"إسطنبول","es":"Estambul"},
+    "cappadocia":{"en":"Cappadocia","tr":"Kapadokya","ar":"كابادوكيا","es":"Capadocia"},
+    "bodrum":{"en":"Bodrum","tr":"Bodrum","ar":"بودروم","es":"Bodrum"},
+    "fethiye":{"en":"Fethiye","tr":"Fethiye","ar":"فتحية","es":"Fethiye"},
+    "pamukkale":{"en":"Pamukkale","tr":"Pamukkale","ar":"باموكالي","es":"Pamukkale"},
+    "dubai":{"en":"Dubai","tr":"Dubai","ar":"دبي","es":"Dubái"},
+    "abu-dhabi":{"en":"Abu Dhabi","tr":"Abu Dabi","ar":"أبوظبي","es":"Abu Dabi"},
+    "london":{"en":"London","tr":"Londra","ar":"لندن","es":"Londres"},
+    "cairo":{"en":"Cairo","tr":"Kahire","ar":"القاهرة","es":"El Cairo"},
+    "buenos-aires":{"en":"Buenos Aires","tr":"Buenos Aires","ar":"بوينس آيرس","es":"Buenos Aires"},
+  };
+  const COUNTRY_NAMES = {
+    "istanbul":{"en":"Turkey","tr":"Türkiye","ar":"تركيا","es":"Turquía"},
+    "cappadocia":{"en":"Turkey","tr":"Türkiye","ar":"تركيا","es":"Turquía"},
+    "bodrum":{"en":"Turkey","tr":"Türkiye","ar":"تركيا","es":"Turquía"},
+    "fethiye":{"en":"Turkey","tr":"Türkiye","ar":"تركيا","es":"Turquía"},
+    "pamukkale":{"en":"Turkey","tr":"Türkiye","ar":"تركيا","es":"Turquía"},
+    "dubai":{"en":"United Arab Emirates","tr":"Birleşik Arap Emirlikleri","ar":"الإمارات العربية المتحدة","es":"Emiratos Árabes Unidos"},
+    "abu-dhabi":{"en":"United Arab Emirates","tr":"Birleşik Arap Emirlikleri","ar":"الإمارات العربية المتحدة","es":"Emiratos Árabes Unidos"},
+    "london":{"en":"England","tr":"İngiltere","ar":"إنجلترا","es":"Inglaterra"},
+    "cairo":{"en":"Egypt","tr":"Mısır","ar":"مصر","es":"Egipto"},
+    "buenos-aires":{"en":"Argentina","tr":"Arjantin","ar":"الأرجنتين","es":"Argentina"},
+  };
+
+  const getF = (id) => document.getElementById(id).value.trim();
+  const newTour = {
+    slug, citySlug: city,
+    cityName: CITY_NAMES[city] || {en:city},
+    countryName: COUNTRY_NAMES[city] || {en:""},
+    price, freeCancellation: document.getElementById("f-cancel").value === "true",
+    hotelPickup: document.getElementById("f-pickup").value === "true",
+    images: lines(document.getElementById("f-images").value),
+    i18n: {
+      en: { title: titleEn, desc: descEn, dur: durEn, inc: incEn, itin: itinEn },
+      tr: { title: getF("f-title-tr")||titleEn, desc: getF("f-desc-tr")||descEn, dur: getF("f-dur-tr")||durEn, inc: lines(getF("f-inc-tr"))||incEn, itin: lines(getF("f-itin-tr"))||itinEn },
+      ar: { title: getF("f-title-ar")||titleEn, desc: getF("f-desc-ar")||descEn, dur: getF("f-dur-ar")||durEn, inc: lines(getF("f-inc-ar"))||incEn, itin: lines(getF("f-itin-ar"))||itinEn },
+      es: { title: getF("f-title-es")||titleEn, desc: getF("f-desc-es")||descEn, dur: getF("f-dur-es")||durEn, inc: lines(getF("f-inc-es"))||incEn, itin: lines(getF("f-itin-es"))||itinEn },
+    }
+  };
+
+  const arr = getCustomTours();
+  arr.push(newTour);
+  setCustomTours(arr);
+  TOURS.push(newTour);
+  renderToursList();
+  updateStats();
+  clearForm();
+  document.getElementById("add-msg").innerHTML = '<span style="color:#3aaf6f">✅ Tour saved! It will appear on the site immediately.</span>';
+  toastAdm("Tour added: " + titleEn);
+}
+
+function clearForm() {
+  ["f-slug","f-price","f-dur","f-title-en","f-desc-en","f-inc-en","f-itin-en",
+   "f-title-tr","f-desc-tr","f-dur-tr","f-inc-tr","f-itin-tr",
+   "f-title-ar","f-desc-ar","f-dur-ar","f-inc-ar","f-itin-ar",
+   "f-title-es","f-desc-es","f-dur-es","f-inc-es","f-itin-es","f-images"]
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
+  document.getElementById("add-msg").textContent = "";
+}
+
+function loadConfigFields() {
+  const ov = JSON.parse(localStorage.getItem("mv-config") || "{}");
+  const defs = {
+    whatsapp: CONFIG.whatsapp, phone: CONFIG.phone,
+    phone2: CONFIG.phone2 || "+90 539 681 9441",
+    email: CONFIG.email, email2: CONFIG.email2 || "susana@moonvalleytours.com",
+    address: CONFIG.address, tursab: CONFIG.tursab || "A/8271"
+  };
+  Object.assign(defs, ov);
+  Object.keys(defs).forEach(k => {
+    const el = document.getElementById("cfg-" + k);
+    if (el) el.value = defs[k];
+  });
+}
+
+function saveConfig() {
+  const fields = ["whatsapp","phone","phone2","email","email2","address","tursab"];
+  const ov = {};
+  fields.forEach(k => { const el = document.getElementById("cfg-"+k); if (el) ov[k] = el.value.trim(); });
+  localStorage.setItem("mv-config", JSON.stringify(ov));
+  Object.assign(CONFIG, ov);
+  toastAdm("Company settings saved!");
+}
+
+function resetConfig() {
+  if (!confirm("Reset to default values?")) return;
+  localStorage.removeItem("mv-config");
+  location.reload();
+}
+
+function changePwd() {
+  const n = document.getElementById("new-pwd").value;
+  const c = document.getElementById("confirm-pwd").value;
+  const msg = document.getElementById("pwd-msg");
+  if (!n || n.length < 6) { msg.style.color="var(--red)"; msg.textContent = "Password must be at least 6 characters."; return; }
+  if (n !== c) { msg.style.color="var(--red)"; msg.textContent = "Passwords do not match."; return; }
+  localStorage.setItem(PWD_KEY, hashPwd(n));
+  msg.style.color="var(--green)"; msg.textContent = "✅ Password changed successfully.";
+  document.getElementById("new-pwd").value = "";
+  document.getElementById("confirm-pwd").value = "";
+}
+
+function exportData() {
+  const data = { customTours: getCustomTours(), configOverrides: JSON.parse(localStorage.getItem("mv-config")||"{}") };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "moonvalley-admin-export-" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+}
+</script>
+</body>
+</html>
