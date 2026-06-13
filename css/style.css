@@ -115,15 +115,23 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; margin: 0 
 .main-nav a.is-active { background: var(--navy); color: #fff; }
 .nav-cta { margin-left: 6px; }
 
+/* ── Language switcher — always visible in header ────────────────────────── */
 .lang-switch {
-  display: flex; border: 2px solid var(--line); border-radius: 999px; overflow: hidden; margin-left: 8px;
+  display: flex; flex-shrink: 0;
+  border: 2px solid var(--line); border-radius: 999px; overflow: hidden;
+  margin-left: 12px; background: #fff;
+  box-shadow: 0 1px 4px rgba(11,44,77,.08);
 }
 .lang-switch button {
-  border: 0; background: transparent; padding: 6px 12px; font-weight: 800; font-size: .8rem; color: var(--mist);
+  border: 0; background: transparent; padding: 6px 10px;
+  font-weight: 800; font-size: .75rem; color: var(--mist);
+  cursor: pointer; transition: background .15s, color .15s;
+  white-space: nowrap;
 }
+.lang-switch button:hover { background: var(--brand-soft); color: var(--brand-deep); }
 .lang-switch button.is-on { background: var(--navy); color: #fff; }
 
-.nav-toggle { display: none; margin-left: auto; background: none; border: 0; width: 44px; height: 44px; position: relative; z-index: 101; }
+.nav-toggle { display: none; background: none; border: 0; width: 44px; height: 44px; position: relative; z-index: 101; margin-left: 8px; }
 .nav-toggle span, .nav-toggle::before, .nav-toggle::after {
   content: ""; display: block; height: 3px; border-radius: 3px; background: var(--navy);
   margin: 6px 0; transition: transform .25s, opacity .25s;
@@ -556,8 +564,8 @@ body.nav-open .nav-toggle::after { transform: translateY(-9px) rotate(-45deg); }
   .main-nav a { color: #fff; font-size: 1.25rem; padding: 12px 24px; }
   .main-nav a.is-active { background: var(--brand); }
   .nav-toggle { display: block; }
-  .lang-switch { border-color: #ffffff3a; margin: 14px 0 0; }
-  .lang-switch button { color: #cfe6f7; padding: 8px 18px; }
+  .lang-switch { margin-left: 0; border-color: var(--line); }
+  .lang-switch button { padding: 5px 8px; font-size: .7rem; }
   .nav-cta { margin: 10px 0 0; }
   .hero__search { flex-direction: column; }
   .hero__search .btn { width: 100%; }
