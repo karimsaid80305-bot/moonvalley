@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking — Moon Valley Tours</title>
+<meta name="description" content="Book your Moon Valley Tours experience online: pick a tour, date and travelers, and receive confirmation via WhatsApp or email.">
+<meta name="keywords" content="Moon Valley Tours, tours, activities, Istanbul, Cappadocia, Bodrum, Dubai, London, Cairo, travel, excursions, day trips">
+<meta name="author" content="Moon Valley Tours">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0b2c4d">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Moon Valley Tours">
+<meta property="og:title" content="Booking — Moon Valley Tours">
+<meta property="og:description" content="Book your Moon Valley Tours experience online: pick a tour, date and travelers, and receive confirmation via WhatsApp or email.">
+<meta property="og:image" content="assets/logo/logo.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/favicon-192.png">
+<link rel="apple-touch-icon" href="assets/icons/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,600&family=Manrope:wght@400;600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body data-page="booking">
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Moon Valley Tours — Home">
+      <img src="assets/logo/logo.jpg" alt="Moon Valley Tours logo" width="46" height="46">
+      <span><b>Moon Valley</b><small>Tours</small></span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-controls="main-nav"><span></span></button>
+    <nav class="main-nav" id="main-nav" aria-label="Main navigation">
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="programs.html" data-i18n="nav.tours">Tours</a>
+      <a href="prices.html" data-i18n="nav.prices">Prices</a>
+      <a href="gallery.html" data-i18n="nav.gallery">Gallery</a>
+      <a href="about.html" data-i18n="nav.about">About</a>
+      <a href="contact.html" data-i18n="nav.contact">Contact</a>
+      <a href="booking.html" class="btn btn--gold btn--sm nav-cta" data-i18n="nav.book">Book Now</a>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button data-lang="en" type="button">EN</button>
+        <button data-lang="tr" type="button">TR</button>
+      </div>
+    </nav>
+  </div>
+</header>
+<main>
+<section class="page-hero">
+  <div class="wrap">
+    
+    <h1 data-i18n="booking.title">Book Your Tour</h1>
+    <p data-i18n="booking.sub">Fill in the form — we confirm availability within hours, with no prepayment.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div id="booking-form-wrap">
+      <div class="booking-layout">
+        <div class="panel">
+          <h2 data-i18n="booking.form.title">Reservation details</h2>
+          <form id="booking-form" novalidate>
+            <div class="form-grid">
+              <div class="form-field form-field--full">
+                <label for="bk-tour" data-i18n="bk.tour">Tour / Program</label>
+                <select id="bk-tour" required></select>
+                <span class="err"></span>
+              </div>
+              <div class="form-field">
+                <label for="bk-date" data-i18n="bk.date">Date</label>
+                <input type="date" id="bk-date" required>
+                <span class="err"></span>
+              </div>
+              <div class="form-field">
+                <label for="bk-adults" data-i18n="bk.adults">Adults</label>
+                <input type="number" id="bk-adults" min="1" max="40" value="2">
+                <span class="err"></span>
+              </div>
+              <div class="form-field">
+                <label for="bk-children" data-i18n="bk.children">Children (3–7 yrs · −30%)</label>
+                <input type="number" id="bk-children" min="0" max="20" value="0">
+                <span class="err"></span>
+              </div>
+              <div class="form-field">
+                <label for="bk-name" data-i18n="bk.name">Full name</label>
+                <input type="text" id="bk-name" autocomplete="name" required>
+                <span class="err"></span>
+              </div>
+              <div class="form-field">
+                <label for="bk-email" data-i18n="bk.email">Email</label>
+                <input type="email" id="bk-email" autocomplete="email" required>
+                <span class="err"></span>
+              </div>
+              <div class="form-field">
+                <label for="bk-phone" data-i18n="bk.phone">Phone / WhatsApp</label>
+                <input type="tel" id="bk-phone" autocomplete="tel" required>
+                <span class="err"></span>
+              </div>
+              <div class="form-field form-field--full">
+                <label for="bk-hotel" data-i18n="bk.hotel">Hotel / pickup point (optional)</label>
+                <input type="text" id="bk-hotel">
+                <span class="err"></span>
+              </div>
+              <div class="form-field form-field--full">
+                <label for="bk-notes" data-i18n="bk.notes">Special requests (optional)</label>
+                <textarea id="bk-notes" rows="3"></textarea>
+                <span class="err"></span>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px">
+              <button type="submit" class="btn btn--brand" data-i18n="bk.submit">Send booking via WhatsApp</button>
+              <button type="button" id="bk-email-send" class="btn btn--ghost" data-i18n="bk.submit2">or send by email</button>
+            </div>
+          </form>
+        </div>
+        <aside class="panel summary" id="summary-card">
+          <h2 data-i18n="bk.summary">Your booking</h2>
+          <div class="summary__tour">
+            <img id="sum-img" src="assets/logo/logo.jpg" alt="" width="86" height="64">
+            <b id="sum-title"></b>
+          </div>
+          <div class="summary__rows" id="sum-rows"></div>
+          <div class="summary__rows summary__total">
+            <div><span data-i18n="bk.sum.total">Estimated total</span><span class="money" id="sum-total">—</span></div>
+          </div>
+          <p class="price-note" data-i18n="bk.sum.note">Final price is confirmed before any payment. Infants 0–2 travel free.</p>
+        </aside>
+      </div>
+    </div>
+    <div class="panel booking-ok" id="booking-ok" hidden>
+      <div class="big">🌙✨</div>
+      <h2 data-i18n="bk.ok.t">Request ready!</h2>
+      <p class="section-sub" style="margin:0 auto 22px" data-i18n="bk.ok.d">Your booking request was opened in WhatsApp / email. We'll confirm shortly.</p>
+      <button class="btn btn--brand" id="bk-again" data-i18n="bk.new">Make another booking</button>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <img src="assets/logo/logo.jpg" alt="Moon Valley Tours logo" loading="lazy" width="56" height="56">
+      <p data-i18n="footer.tag">Discover extraordinary destinations and create unforgettable memories with our curated travel experiences.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/moonvalleytours" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+        <a href="https://www.facebook.com/moonvalleytours" target="_blank" rel="noopener" aria-label="Facebook"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3l-.4 3H14v9h-3.5v-9H8V9h2.5V7.2C10.5 4.9 11.9 3 14.7 3H17v3h-1.7c-1 0-1.3.5-1.3 1.4V9Z"/></svg></a>
+      </div>
+    </div>
+    <div>
+      <h4 data-i18n="footer.links">Quick links</h4>
+      <ul>
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="programs.html" data-i18n="nav.tours">Tours</a></li>
+        <li><a href="prices.html" data-i18n="nav.prices">Prices</a></li>
+        <li><a href="booking.html" data-i18n="nav.booking">Booking</a></li>
+        <li><a href="gallery.html" data-i18n="nav.gallery">Gallery</a></li>
+        <li><a href="about.html" data-i18n="nav.about">About</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-i18n="footer.dests">Destinations</h4>
+      <ul>
+        <li><a href="programs.html?dest=istanbul">Istanbul</a></li>
+        <li><a href="programs.html?dest=cappadocia">Cappadocia</a></li>
+        <li><a href="programs.html?dest=bodrum">Bodrum</a></li>
+        <li><a href="programs.html?dest=dubai">Dubai</a></li>
+        <li><a href="programs.html?dest=london">London</a></li>
+        <li><a href="programs.html?dest=cairo">Cairo</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-i18n="footer.contact">Contact us</h4>
+      <ul>
+        <li><span>Istanbul, Türkiye</span></li>
+        <li><a href="mailto:info@moonvalleytours.com">info@moonvalleytours.com</a></li>
+        <li><a href="tel:+902122347777">+90 212 234 7777</a></li>
+        <li><a href="https://wa.me/905334414242" target="_blank" rel="noopener">WhatsApp: +90 533 441 4242</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>© <span id="year">2026</span> Moon Valley Tours. <span data-i18n="footer.rights">All rights reserved.</span></span>
+    <span>moonvalleytours.com</span>
+  </div>
+</footer>
+<script src="js/app.js"></script>
+<noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
+</body>
+</html>
