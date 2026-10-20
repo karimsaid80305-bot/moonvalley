@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(**/3D Print Cost Calculator App - standalone.html)",
+      "Read(**/single-file-version.html)"
+    ]
+  }
+}
